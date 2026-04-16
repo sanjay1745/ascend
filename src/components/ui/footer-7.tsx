@@ -49,9 +49,9 @@ const defaultLegalLinks = [
 
 export const Footer7 = ({
   sections = defaultSections,
-  description = "We create compelling visual stories for brands, athletes, and creators. Based in California.",
+  description = "Marketing for the future of fitness.\nCA | HI | #risenascend",
   socialLinks = defaultSocialLinks,
-  copyright = `© ${new Date().getFullYear()} Ascender Production. All rights reserved.`,
+  copyright = `© ${new Date().getFullYear()} Ascender Production Company, LLC. All rights reserved.`,
   legalLinks = defaultLegalLinks,
 }: Footer7Props) => {
   return (
@@ -64,7 +64,7 @@ export const Footer7 = ({
               <h2 className="text-xl font-bold tracking-tight text-white">
                 ASCENDER
               </h2>
-              <p className="mt-4 text-sm text-white/40 leading-relaxed">
+              <p className="mt-4 text-sm text-white/40 leading-relaxed whitespace-pre-line">
                 {description}
               </p>
             </div>

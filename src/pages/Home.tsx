@@ -127,7 +127,7 @@ function ShortformCard({ project }: { project: ShortformProject }) {
       {/* Modal lightbox */}
       {modalOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center gap-12 px-8 bg-black/80 backdrop-blur-sm"
+          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center px-4"
           onClick={() => setModalOpen(false)}
         >
           <button
@@ -139,41 +139,46 @@ function ShortformCard({ project }: { project: ShortformProject }) {
             </svg>
           </button>
 
-          {/* Animated text blocks */}
-          <div className="flex flex-col gap-8 text-left" onClick={(e) => e.stopPropagation()}>
-            {project.client && (
-              <div
-                className={`transition-all duration-700 ease-out ${visible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'}`}
-                style={{ transitionDelay: '0ms' }}
-              >
-                <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-white/40 mb-1">Client</p>
-                <p className="text-2xl font-bold text-white">{project.client}</p>
-              </div>
-            )}
-            {project.projectLabel && (
-              <div
-                className={`transition-all duration-700 ease-out ${visible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'}`}
-                style={{ transitionDelay: '120ms' }}
-              >
-                <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-white/40 mb-1">Project</p>
-                <p className="text-2xl font-bold text-white">{project.projectLabel}</p>
-              </div>
-            )}
-          </div>
-
-          {/* Video */}
+          {/* Mobile: video on top, text below. Desktop: text left, video right */}
           <div
-            className={`flex-shrink-0 w-full max-w-[280px] aspect-[9/16] rounded-2xl overflow-hidden bg-black transition-all duration-700 ease-out ${visible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'}`}
-            style={{ transitionDelay: '60ms' }}
+            className="flex flex-col items-center gap-6 md:flex-row md:items-center md:gap-12"
             onClick={(e) => e.stopPropagation()}
           >
-            <video
-              src={project.videoSrc}
-              className="w-full h-full object-contain"
-              controls
-              autoPlay
-              playsInline
-            />
+            {/* Video */}
+            <div
+              className={`shrink-0 w-full max-w-[260px] md:max-w-[280px] aspect-[9/16] rounded-2xl overflow-hidden bg-black transition-all duration-700 ease-out ${visible ? 'opacity-100 translate-y-0 md:translate-x-0' : 'opacity-0 translate-y-6 md:translate-x-8'}`}
+              style={{ transitionDelay: '60ms' }}
+            >
+              <video
+                src={project.videoSrc}
+                className="w-full h-full object-contain"
+                controls
+                autoPlay
+                playsInline
+              />
+            </div>
+
+            {/* Text blocks */}
+            <div className="flex flex-col gap-5 text-center md:text-left">
+              {project.client && (
+                <div
+                  className={`transition-all duration-700 ease-out ${visible ? 'opacity-100 translate-y-0 md:translate-x-0' : 'opacity-0 translate-y-4 md:-translate-x-8'}`}
+                  style={{ transitionDelay: '0ms' }}
+                >
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-white/40 mb-1">Client</p>
+                  <p className="text-xl md:text-2xl font-bold text-white">{project.client}</p>
+                </div>
+              )}
+              {project.projectLabel && (
+                <div
+                  className={`transition-all duration-700 ease-out ${visible ? 'opacity-100 translate-y-0 md:translate-x-0' : 'opacity-0 translate-y-4 md:-translate-x-8'}`}
+                  style={{ transitionDelay: '120ms' }}
+                >
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-white/40 mb-1">Project</p>
+                  <p className="text-xl md:text-2xl font-bold text-white">{project.projectLabel}</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -278,7 +283,7 @@ export default function Home() {
       </Helmet>
     <div className="w-full bg-background text-foreground">
       {/* Circular gallery — sticky scroll section */}
-      <div style={{ height: '500vh' }}>
+      <div className="h-screen">
         <div className="w-full h-screen sticky top-0 flex flex-col items-center justify-center overflow-hidden">
           <div className="w-full h-full scale-[0.55] md:scale-100 origin-center">
             <CircularGallery items={galleryData} centerContent={slogan} />
@@ -299,33 +304,27 @@ export default function Home() {
         <p className="text-center text-[10px] font-semibold uppercase tracking-[0.3em] text-white/25 mb-6">
           Trusted by
         </p>
-        {/* Single wrapper animates; two strips each repeat logos 4× to always exceed viewport width */}
-        <div className="flex animate-marquee">
+        <div className="flex w-max animate-marquee">
           {[0, 1].map((copy) => (
-            <div
-              key={copy}
-              aria-hidden={copy === 1 ? true : undefined}
-              className="flex shrink-0 items-center gap-20 px-10"
-            >
-              {Array.from({ length: 4 }, (_, repeat) =>
-                [
-                  { src: '/logos/hidrate.png', alt: 'HiDrate', cls: 'grayscale', h: 'h-20' },
-                  { src: '/logos/youngla.png', alt: 'YoungLA', cls: '', h: 'h-20' },
-                  { src: '/logos/skelcore.png', alt: 'Skelcore', cls: '', h: 'h-20' },
-                  { src: '/logos/bsn.png', alt: 'BSN', cls: '', h: 'h-20' },
-                  { src: '/logos/bxactiv.png', alt: 'Bxactiv', cls: '', h: 'h-20' },
-                  { src: '/logos/honolulu marathon logo.webp', alt: 'Honolulu Marathon', cls: 'grayscale', h: 'h-10' },
-                  { src: '/logos/ufc-logo-png.png', alt: 'UFC', cls: '', h: 'h-24' },
-                  { src: '/logos/mount to coast logo.png', alt: 'Mount to Coast', cls: '', h: 'h-14' },
-                ].map((logo) => (
+            <div key={copy} aria-hidden={copy === 1 ? true : undefined} className="flex items-center gap-16 px-8">
+              {[
+                { src: '/logos/hidrate.png',                   alt: 'HiDrate',           cls: 'grayscale' },
+                { src: '/logos/youngla.png',                   alt: 'YoungLA',           cls: ''          },
+                { src: '/logos/skelcore.png',                  alt: 'Skelcore',          cls: ''          },
+                { src: '/logos/bsn.png',                       alt: 'BSN',               cls: ''          },
+                { src: '/logos/bxactiv.png',                   alt: 'Bxactiv',           cls: ''          },
+                { src: '/logos/honolulu marathon logo.webp',   alt: 'Honolulu Marathon', cls: 'grayscale' },
+                { src: '/logos/ufc-logo-png.png',              alt: 'UFC',               cls: ''          },
+                { src: '/logos/mount to coast logo.png',       alt: 'Mount to Coast',    cls: ''          },
+              ].map((logo) => (
+                <div key={logo.alt} className="flex items-center justify-center w-24 h-10 shrink-0">
                   <img
-                    key={`${repeat}-${logo.alt}`}
                     src={logo.src}
                     alt={logo.alt}
-                    className={`${logo.h} w-auto object-contain opacity-60 hover:opacity-100 transition-opacity duration-300 ${logo.cls || 'brightness-0 invert'}`}
+                    className={`max-h-full max-w-full object-contain opacity-50 hover:opacity-100 transition-opacity duration-300 ${logo.cls || 'brightness-0 invert'}`}
                   />
-                ))
-              )}
+                </div>
+              ))}
             </div>
           ))}
         </div>
@@ -347,9 +346,21 @@ export default function Home() {
           </div>
         </div>
 
-        {/* 8 portrait cards in one horizontal row */}
-        <div className="mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-8 gap-2">
+        {/* 8 portrait cards — carousel on mobile, grid on desktop */}
+        <div className="pb-24">
+          {/* Mobile: swipeable carousel */}
+          <div className="md:hidden flex gap-3 overflow-x-auto px-4 pb-2 snap-x snap-mandatory scrollbar-hide"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+            {shortformProjects.map((project) => (
+              <div key={project.id} className="snap-start shrink-0 w-[72vw]">
+                <ShortformCard project={project} />
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop: original 8-column grid */}
+          <div className="hidden md:grid md:grid-cols-8 gap-2 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             {shortformProjects.map((project) => (
               <ShortformCard key={project.id} project={project} />
             ))}
@@ -366,7 +377,7 @@ export default function Home() {
               <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.3em]" style={{ color: '#F97316' }}>
                 Ascender Production
               </p>
-              <h2 className="text-5xl font-bold tracking-tight text-white md:text-6xl">
+              <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-white md:text-6xl">
                 Select Longform Projects
               </h2>
             </div>
@@ -375,22 +386,26 @@ export default function Home() {
 
         {/* Grid */}
         <div className="mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
-          {/* Row 1: two equal */}
-          <div className="mb-2 grid grid-cols-1 gap-2 md:grid-cols-2">
-            <ProjectCard project={{ ...projects[0], size: 'tall' }} />
-            <ProjectCard project={{ ...projects[3], size: 'tall' }} />
+          {/* Mobile: single column list of compact cards */}
+          <div className="flex flex-col gap-2 md:hidden">
+            {[projects[0], projects[3], projects[1], projects[2], projects[4]].map((p) => (
+              <ProjectCard key={p.id} project={{ ...p, size: 'video' }} />
+            ))}
           </div>
 
-          {/* Row 2: three equal, 16:9 */}
-          <div className="mb-2 grid grid-cols-1 gap-2 sm:grid-cols-3">
-            <ProjectCard project={{ ...projects[1], size: 'video' }} />
-            <ProjectCard project={{ ...projects[2], size: 'video' }} />
-            <ProjectCard project={{ ...projects[4], size: 'video' }} />
+          {/* Desktop: original 2-row layout */}
+          <div className="hidden md:block">
+            <div className="mb-2 grid grid-cols-2 gap-2">
+              <ProjectCard project={{ ...projects[0], size: 'tall' }} />
+              <ProjectCard project={{ ...projects[3], size: 'tall' }} />
+            </div>
+            <div className="mb-2 grid grid-cols-3 gap-2">
+              <ProjectCard project={{ ...projects[1], size: 'video' }} />
+              <ProjectCard project={{ ...projects[2], size: 'video' }} />
+              <ProjectCard project={{ ...projects[4], size: 'video' }} />
+            </div>
           </div>
-
         </div>
-
-
       </div>
     </div>
     </>

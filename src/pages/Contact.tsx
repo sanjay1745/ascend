@@ -4,10 +4,16 @@ import { Helmet } from 'react-helmet-async'
 export default function Contact() {
   const [submitted, setSubmitted] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    // Wire up to your form backend (Formspree, Resend, etc.) here
-    setSubmitted(true)
+    const form = e.currentTarget
+    const data = new FormData(form)
+    const res = await fetch('https://formspree.io/f/mzdydorz', {
+      method: 'POST',
+      body: data,
+      headers: { Accept: 'application/json' },
+    })
+    if (res.ok) setSubmitted(true)
   }
 
   return (

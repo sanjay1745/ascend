@@ -17,76 +17,124 @@ export interface GalleryItem {
 
 interface CircularGalleryProps extends HTMLAttributes<HTMLDivElement> {
   items: GalleryItem[];
-  /** Controls how far the items are from the center. */
   radius?: number;
-  /** Controls the speed of auto-rotation when not scrolling. */
   autoRotateSpeed?: number;
-  /** Content rendered at z=0 in the 3D scene — appears behind front cards, in front of back cards. */
   centerContent?: React.ReactNode;
 }
 
 const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
   ({ items, className, centerContent, radius = 600, autoRotateSpeed = 0.02, ...props }, ref) => {
     const [rotation, setRotation] = useState(0);
-    const [isScrolling, setIsScrolling] = useState(false);
-    const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const [isDragging, setIsDragging] = useState(false);
     const animationFrameRef = useRef<number | null>(null);
+    const lastRotation = useRef(0);
+
+    // --- Mouse drag (desktop) ---
+    const mouseStartX = useRef<number | null>(null);
+
+    const onMouseDown = (e: React.MouseEvent) => {
+      mouseStartX.current = e.clientX;
+      lastRotation.current = rotation;
+      setIsDragging(true);
+    };
+
+    const onMouseMove = (e: React.MouseEvent) => {
+      if (mouseStartX.current === null) return;
+      const dx = e.clientX - mouseStartX.current;
+      const delta = (dx / window.innerWidth) * 180;
+      setRotation(lastRotation.current - delta);
+    };
+
+    const onMouseUp = () => {
+      mouseStartX.current = null;
+      setIsDragging(false);
+    };
+
+    // --- Touch drag (mobile) ---
+    const touchStartX = useRef<number | null>(null);
+    const touchStartY = useRef<number | null>(null);
+    const isDraggingH = useRef<boolean | null>(null);
 
     useEffect(() => {
-      const handleScroll = () => {
-        setIsScrolling(true);
-        if (scrollTimeoutRef.current) {
-          clearTimeout(scrollTimeoutRef.current);
-        }
+      const el = document.getElementById('circular-gallery-touch');
+      if (!el) return;
 
-        const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const scrollProgress = scrollableHeight > 0 ? window.scrollY / scrollableHeight : 0;
-        const scrollRotation = scrollProgress * 360;
-        setRotation(scrollRotation);
-
-        scrollTimeoutRef.current = setTimeout(() => {
-          setIsScrolling(false);
-        }, 150);
+      const onTouchStart = (e: TouchEvent) => {
+        touchStartX.current = e.touches[0].clientX;
+        touchStartY.current = e.touches[0].clientY;
+        isDraggingH.current = null;
+        lastRotation.current = rotation;
       };
 
-      window.addEventListener('scroll', handleScroll, { passive: true });
+      const onTouchMove = (e: TouchEvent) => {
+        if (touchStartX.current === null || touchStartY.current === null) return;
+        const dx = e.touches[0].clientX - touchStartX.current;
+        const dy = e.touches[0].clientY - touchStartY.current;
+
+        if (isDraggingH.current === null && (Math.abs(dx) > 5 || Math.abs(dy) > 5)) {
+          isDraggingH.current = Math.abs(dx) > Math.abs(dy);
+        }
+
+        if (isDraggingH.current) {
+          e.preventDefault();
+          const delta = (dx / window.innerWidth) * 180;
+          setRotation(lastRotation.current - delta);
+          setIsDragging(true);
+        }
+      };
+
+      const onTouchEnd = () => {
+        touchStartX.current = null;
+        touchStartY.current = null;
+        isDraggingH.current = null;
+        setIsDragging(false);
+      };
+
+      el.addEventListener('touchstart', onTouchStart, { passive: true });
+      el.addEventListener('touchmove', onTouchMove, { passive: false });
+      el.addEventListener('touchend', onTouchEnd);
+
       return () => {
-        window.removeEventListener('scroll', handleScroll);
-        if (scrollTimeoutRef.current) {
-          clearTimeout(scrollTimeoutRef.current);
-        }
+        el.removeEventListener('touchstart', onTouchStart);
+        el.removeEventListener('touchmove', onTouchMove);
+        el.removeEventListener('touchend', onTouchEnd);
       };
-    }, []);
+    }, [rotation]);
 
+    // --- Auto-rotate when idle ---
     useEffect(() => {
       const autoRotate = () => {
-        if (!isScrolling) {
+        if (!isDragging) {
           setRotation(prev => prev + autoRotateSpeed);
         }
         animationFrameRef.current = requestAnimationFrame(autoRotate);
       };
-
       animationFrameRef.current = requestAnimationFrame(autoRotate);
-
       return () => {
-        if (animationFrameRef.current) {
-          cancelAnimationFrame(animationFrameRef.current);
-        }
+        if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
       };
-    }, [isScrolling, autoRotateSpeed]);
+    }, [isDragging, autoRotateSpeed]);
 
     const anglePerItem = 360 / items.length;
 
     return (
       <div
+        id="circular-gallery-touch"
         ref={ref}
         role="region"
         aria-label="Circular 3D Gallery"
         className={cn("relative w-full h-full flex items-center justify-center", className)}
-        style={{ perspective: '2000px', transformStyle: 'preserve-3d' }}
+        style={{
+          perspective: '2000px',
+          transformStyle: 'preserve-3d',
+          cursor: isDragging ? 'grabbing' : 'grab',
+        }}
+        onMouseDown={onMouseDown}
+        onMouseMove={onMouseMove}
+        onMouseUp={onMouseUp}
+        onMouseLeave={onMouseUp}
         {...props}
       >
-        {/* Rendered at z=0 — front cards paint over it, back cards paint behind it */}
         {centerContent && (
           <div
             className="absolute pointer-events-none select-none"
