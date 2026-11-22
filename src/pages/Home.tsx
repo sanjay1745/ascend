@@ -3,16 +3,16 @@ import { Helmet } from 'react-helmet-async';
 import { CircularGallery, type GalleryItem } from '@/components/ui/circular-gallery';
 
 const galleryData: GalleryItem[] = [
-  { common: '1', binomial: '', photo: { url: '/photos/homepage1.jpg',      text: '', by: '' } },
-  { common: '2', binomial: '', photo: { url: '/photos/homepage2.jpg',      text: '', by: '' } },
-  { common: '3', binomial: '', photo: { url: '/photos/homepage-3.jpg',     text: '', by: '' } },
-  { common: '4', binomial: '', photo: { url: '/photos/homepage-4.jpg',     text: '', by: '' } },
-  { common: '5', binomial: '', photo: { url: '/photos/homepage-5.jpg',     text: '', by: '' } },
-  { common: '6', binomial: '', photo: { url: '/photos/homepage-6.jpg',     text: '', by: '' } },
-  { common: '7', binomial: '', photo: { url: '/photos/homepage-7.jpg',     text: '', by: '' } },
-  { common: '8', binomial: '', photo: { url: '/photos/homepage-8.jpg',     text: '', by: '' } },
-  { common: '9', binomial: '', photo: { url: '/photos/homepage-9.jpg',     text: '', by: '' } },
-  { common: '10', binomial: '', photo: { url: '/photos/homepage-10.jpg',   text: '', by: '' } },
+  { common: '1', binomial: '', photo: { url: '/photos/carousel/homepage1.webp',      text: '', by: '' } },
+  { common: '2', binomial: '', photo: { url: '/photos/carousel/homepage2.webp',      text: '', by: '' } },
+  { common: '3', binomial: '', photo: { url: '/photos/carousel/homepage-3.webp',     text: '', by: '' } },
+  { common: '4', binomial: '', photo: { url: '/photos/carousel/homepage-4.webp',     text: '', by: '' } },
+  { common: '5', binomial: '', photo: { url: '/photos/carousel/homepage-5.webp',     text: '', by: '' } },
+  { common: '6', binomial: '', photo: { url: '/photos/carousel/homepage-6.webp',     text: '', by: '' } },
+  { common: '7', binomial: '', photo: { url: '/photos/carousel/homepage-7.webp',     text: '', by: '' } },
+  { common: '8', binomial: '', photo: { url: '/photos/carousel/homepage-8.webp',     text: '', by: '' } },
+  { common: '9', binomial: '', photo: { url: '/photos/carousel/homepage-9.webp',     text: '', by: '' } },
+  { common: '10', binomial: '', photo: { url: '/photos/carousel/homepage-10.webp',   text: '', by: '' } },
 ];
 
 const slogan = (
@@ -57,7 +57,17 @@ const projects: Project[] = [
   { id: 7, title: 'This Is Bluehour', client: 'ORIGINAL', year: '2021', category: 'Short Film — Director', gradient: 'from-zinc-800 via-slate-900 to-neutral-800', size: 'normal', youtubeId: '' },
   { id: 8, title: 'Ascension', client: 'MEA INFERNO', year: '2022', category: 'Music Video — Director', gradient: 'from-neutral-800 via-zinc-900 to-stone-800', size: 'normal', youtubeId: '' },
   { id: 9, title: 'Hypebeast × Porsche', client: 'HYPEBEAST', year: '2023', category: 'Branded Content — Director', gradient: 'from-zinc-700 via-neutral-900 to-zinc-900', size: 'wide', youtubeId: '' },
+  { id: 10, title: 'COMPOSED: Ironman Texas with Ava Svindland', client: 'AVA SVINDLAND', year: '2025', category: 'Mini Documentary', gradient: 'from-zinc-900 via-slate-800 to-zinc-900', size: 'tall', youtubeId: 'JAlWlNvbVoQ', thumbnail: '/photos/composed thumbnail.webp' },
+  { id: 11, title: 'You’re Only a Loser if You Quit: Ironman World Championship', client: 'REESE NORTHEN', year: '2025', category: 'Documentary', gradient: 'from-neutral-900 via-zinc-700 to-stone-900', size: 'tall', youtubeId: 'TkF-Ex0vFMY' },
+  { id: 12, title: 'Ironman Maryland with Ava Svindland', client: 'AVA SVINDLAND', year: '2025', category: 'Mini Documentary', gradient: 'from-zinc-900 via-slate-700 to-zinc-800', size: 'normal', youtubeId: 'Cmpqt2G93w0' },
 ];
+
+const projectById = (id: number) => projects.find((p) => p.id === id)!;
+
+// Longform section layout (by project id)
+const longformRow1 = [10, 11].map(projectById);   // COMPOSED, Loser if You Quit
+const longformRow2 = [4, 3, 12].map(projectById); // The Itch, Matt Hughes, Ironman Maryland
+const longformRow3 = [1, 5].map(projectById);     // Nathan Fri, BXACTIV athlete week
 
 interface ShortformProject {
   id: number;
@@ -388,21 +398,27 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
           {/* Mobile: single column list of compact cards */}
           <div className="flex flex-col gap-2 md:hidden">
-            {[projects[0], projects[3], projects[1], projects[2], projects[4]].map((p) => (
+            {[...longformRow1, ...longformRow2, ...longformRow3].map((p) => (
               <ProjectCard key={p.id} project={{ ...p, size: 'video' }} />
             ))}
           </div>
 
-          {/* Desktop: original 2-row layout */}
+          {/* Desktop: 3-row layout */}
           <div className="hidden md:block">
             <div className="mb-2 grid grid-cols-2 gap-2">
-              <ProjectCard project={{ ...projects[0], size: 'tall' }} />
-              <ProjectCard project={{ ...projects[3], size: 'tall' }} />
+              {longformRow1.map((p) => (
+                <ProjectCard key={p.id} project={{ ...p, size: 'tall' }} />
+              ))}
             </div>
             <div className="mb-2 grid grid-cols-3 gap-2">
-              <ProjectCard project={{ ...projects[1], size: 'video' }} />
-              <ProjectCard project={{ ...projects[2], size: 'video' }} />
-              <ProjectCard project={{ ...projects[4], size: 'video' }} />
+              {longformRow2.map((p) => (
+                <ProjectCard key={p.id} project={{ ...p, size: 'video' }} />
+              ))}
+            </div>
+            <div className="mb-2 grid grid-cols-2 gap-2">
+              {longformRow3.map((p) => (
+                <ProjectCard key={p.id} project={{ ...p, size: 'tall' }} />
+              ))}
             </div>
           </div>
         </div>
