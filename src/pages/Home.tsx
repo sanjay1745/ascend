@@ -1,39 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { CircularGallery, type GalleryItem } from '@/components/ui/circular-gallery';
-
-const galleryData: GalleryItem[] = [
-  { common: '1', binomial: '', photo: { url: '/photos/carousel/homepage1.webp',      text: '', by: '' } },
-  { common: '2', binomial: '', photo: { url: '/photos/carousel/homepage2.webp',      text: '', by: '' } },
-  { common: '3', binomial: '', photo: { url: '/photos/carousel/homepage-3.webp',     text: '', by: '' } },
-  { common: '4', binomial: '', photo: { url: '/photos/carousel/homepage-4.webp',     text: '', by: '' } },
-  { common: '5', binomial: '', photo: { url: '/photos/carousel/homepage-5.webp',     text: '', by: '' } },
-  { common: '6', binomial: '', photo: { url: '/photos/carousel/homepage-6.webp',     text: '', by: '' } },
-  { common: '7', binomial: '', photo: { url: '/photos/carousel/homepage-7.webp',     text: '', by: '' } },
-  { common: '8', binomial: '', photo: { url: '/photos/carousel/homepage-8.webp',     text: '', by: '' } },
-  { common: '9', binomial: '', photo: { url: '/photos/carousel/homepage-9.webp',     text: '', by: '' } },
-  { common: '10', binomial: '', photo: { url: '/photos/carousel/homepage-10.webp',   text: '', by: '' } },
-];
-
-const slogan = (
-  <div className="relative flex flex-col items-center justify-center text-center">
-    {/* Orange glow orb */}
-    <div
-      className="absolute inset-0 -z-10 pointer-events-none"
-      style={{
-        background: 'radial-gradient(ellipse 140% 120% at 50% 50%, rgba(249,115,22,0.75) 0%, rgba(249,115,22,0.35) 45%, transparent 75%)',
-        filter: 'blur(24px)',
-      }}
-    />
-    <p className="text-xs font-semibold uppercase tracking-[0.3em] mb-2" style={{ color: '#F97316' }}>
-      Ascender Production
-    </p>
-    <h1 className="text-5xl md:text-6xl font-bold leading-tight text-foreground drop-shadow-lg">
-      RISE N&apos; ASCEND
-    </h1>
-    <div className="mt-3 h-px w-24 bg-gradient-to-r from-transparent via-foreground/30 to-transparent" />
-  </div>
-);
+import { useLocation } from 'react-router-dom';
+import { RaceCourse } from '@/components/race-course';
 
 interface Project {
   id: number;
@@ -50,16 +18,17 @@ interface Project {
 const projects: Project[] = [
   { id: 1, title: 'Nathan Fri attempting to beat David Goggins record of 4,100 pull ups in 24 hours', client: 'NATHAN FREIHOFER', year: '2024', category: 'Mini Documentary', gradient: 'from-zinc-900 via-slate-800 to-zinc-900', size: 'wide', youtubeId: 'tWLAIfWObHs' },
   { id: 2, title: 'LATMAN in Texas', client: 'JAKE LEONARD', year: '2024', category: 'Lifestyle Content', gradient: 'from-zinc-800 via-neutral-900 to-stone-900', size: 'tall', youtubeId: 'rUl-GX-OMBo' },
-  { id: 3, title: 'Road to Sub 3, Cerebral Palsy, and Bodybuilding: Matt Hughes', client: 'BXACTIV', year: '2025', category: 'Short Film', gradient: 'from-stone-900 via-zinc-800 to-neutral-900', size: 'normal', youtubeId: 'x21RqEW9w-Y', thumbnail: '/photos/matt cim thumbnail.jpg' },
+  { id: 3, title: 'Road to Sub 3, Cerebral Palsy, and Bodybuilding: Matt Hughes', client: 'BXACTIV', year: '2025', category: 'Mini Documentary', gradient: 'from-stone-900 via-zinc-800 to-neutral-900', size: 'normal', youtubeId: 'x21RqEW9w-Y', thumbnail: '/photos/matt cim thumbnail.jpg' },
   { id: 4, title: 'The Itch', client: 'FOUNDER CONTENT: KEN MUNOZ', year: '2025', category: 'Documentary', gradient: 'from-neutral-900 via-zinc-700 to-stone-900', size: 'normal', youtubeId: 'wiZtRZtoPaQ' },
   { id: 5, title: 'The first BXACTIV athlete week', client: 'PAUL PEARCEY', year: '2024', category: 'Brand Content', gradient: 'from-zinc-900 via-slate-700 to-zinc-800', size: 'normal', youtubeId: 'QC8jzkglQ8M' },
   { id: 6, title: 'Altered State', client: 'ADOBE', year: '2021', category: 'Branded Content — Director', gradient: 'from-stone-800 via-neutral-900 to-zinc-900', size: 'wide', youtubeId: '' },
   { id: 7, title: 'This Is Bluehour', client: 'ORIGINAL', year: '2021', category: 'Short Film — Director', gradient: 'from-zinc-800 via-slate-900 to-neutral-800', size: 'normal', youtubeId: '' },
   { id: 8, title: 'Ascension', client: 'MEA INFERNO', year: '2022', category: 'Music Video — Director', gradient: 'from-neutral-800 via-zinc-900 to-stone-800', size: 'normal', youtubeId: '' },
   { id: 9, title: 'Hypebeast × Porsche', client: 'HYPEBEAST', year: '2023', category: 'Branded Content — Director', gradient: 'from-zinc-700 via-neutral-900 to-zinc-900', size: 'wide', youtubeId: '' },
-  { id: 10, title: 'COMPOSED: Ironman Texas with Ava Svindland', client: 'AVA SVINDLAND', year: '2025', category: 'Mini Documentary', gradient: 'from-zinc-900 via-slate-800 to-zinc-900', size: 'tall', youtubeId: 'JAlWlNvbVoQ', thumbnail: '/photos/composed thumbnail.webp' },
-  { id: 11, title: 'You’re Only a Loser if You Quit: Ironman World Championship', client: 'REESE NORTHEN', year: '2025', category: 'Documentary', gradient: 'from-neutral-900 via-zinc-700 to-stone-900', size: 'tall', youtubeId: 'TkF-Ex0vFMY' },
-  { id: 12, title: 'Ironman Maryland with Ava Svindland', client: 'AVA SVINDLAND', year: '2025', category: 'Mini Documentary', gradient: 'from-zinc-900 via-slate-700 to-zinc-800', size: 'normal', youtubeId: 'Cmpqt2G93w0' },
+  { id: 10, title: 'COMPOSED: Ironman Texas with Ava Svindland', client: 'AVA SVINDLAND', year: '2026', category: 'Mini Documentary', gradient: 'from-zinc-900 via-slate-800 to-zinc-900', size: 'tall', youtubeId: 'JAlWlNvbVoQ', thumbnail: '/photos/composed thumbnail.webp' },
+  { id: 11, title: 'You’re Only a Loser if You Quit: Ironman World Championship', client: 'REESE NORTHEN', year: '2026', category: 'Mini Documentary', gradient: 'from-neutral-900 via-zinc-700 to-stone-900', size: 'tall', youtubeId: 'TkF-Ex0vFMY' },
+  { id: 12, title: 'Ironman Maryland with Ava Svindland', client: 'AVA SVINDLAND', year: '2026', category: 'Mini Documentary', gradient: 'from-zinc-900 via-slate-700 to-zinc-800', size: 'normal', youtubeId: 'Cmpqt2G93w0' },
+  { id: 13, title: 'ROAD TO PRO: EP. 1', client: 'TREVOR CHOONHAURAI', year: '2026', category: 'Training Vlog', gradient: 'from-stone-800 via-neutral-900 to-zinc-900', size: 'normal', youtubeId: 'gv4OmKMvpww' },
 ];
 
 const projectById = (id: number) => projects.find((p) => p.id === id)!;
@@ -67,7 +36,7 @@ const projectById = (id: number) => projects.find((p) => p.id === id)!;
 // Longform section layout (by project id)
 const longformRow1 = [10, 11].map(projectById);   // COMPOSED, Loser if You Quit
 const longformRow2 = [4, 3, 12].map(projectById); // The Itch, Matt Hughes, Ironman Maryland
-const longformRow3 = [1, 5].map(projectById);     // Nathan Fri, BXACTIV athlete week
+const longformRow3 = [1, 5, 13].map(projectById); // Nathan Fri, BXACTIV athlete week, Road to Pro Ep. 01
 
 interface ShortformProject {
   id: number;
@@ -283,31 +252,30 @@ function ProjectCard({ project }: { project: Project }) {
 }
 
 export default function Home() {
+  const { hash } = useLocation();
+
+  // Scroll to a section when arriving via a link like /#longform-work
+  useEffect(() => {
+    if (!hash) return;
+    const t = setTimeout(() => {
+      document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+    return () => clearTimeout(t);
+  }, [hash]);
+
   return (
     <>
       <Helmet>
         <title>Ascender Production — Rise N' Ascend</title>
-        <meta name="description" content="Video production for brands, athletes, and creators. Based in California and Hawaii. Rise N' Ascend." />
+        <meta name="description" content="Endurance athlete films and mini-documentaries for triathletes, marathoners and ultrarunners. Based in California and Hawaii. Rise N' Ascend." />
         <meta property="og:title" content="Ascender Production — Rise N' Ascend" />
         <meta property="og:description" content="Video production for brands, athletes, and creators. Based in CA & HI." />
       </Helmet>
     <div className="w-full bg-background text-foreground">
-      {/* Circular gallery — sticky scroll section */}
-      <div className="h-screen">
-        <div className="w-full h-screen sticky top-0 flex flex-col items-center justify-center overflow-hidden">
-          <div className="w-full h-full scale-[0.55] md:scale-100 origin-center">
-            <CircularGallery items={galleryData} centerContent={slogan} />
-          </div>
-
-          {/* Scroll hint */}
-          <div className="absolute bottom-8 z-10 flex flex-col items-center gap-1 opacity-50 pointer-events-none select-none">
-            <p className="text-xs text-muted-foreground">Scroll to explore</p>
-            <svg className="h-4 w-4 animate-bounce text-muted-foreground" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path d="M12 5v14M5 12l7 7 7-7" />
-            </svg>
-          </div>
-        </div>
-      </div>
+      {/* Race course — scroll-driven endurance header */}
+      <RaceCourse
+        onWatchFilms={() => document.getElementById('longform-work')?.scrollIntoView({ behavior: 'smooth' })}
+      />
 
       {/* Logo marquee banner */}
       <div className="bg-zinc-950 border-y border-white/10 py-8 overflow-hidden">
@@ -341,7 +309,7 @@ export default function Home() {
       </div>
 
       {/* Select Shortform Projects section */}
-      <div id="selected-work" className="bg-zinc-950 text-white">
+      <div id="selected-work" className="scroll-mt-16 bg-zinc-950 text-white">
         {/* Section header */}
         <div className="mx-auto max-w-7xl px-4 pb-10 pt-16 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between border-b border-white/10 pb-8">
@@ -379,7 +347,7 @@ export default function Home() {
       </div>
 
       {/* Selected Work section */}
-      <div className="bg-zinc-950 text-white">
+      <div id="longform-work" className="scroll-mt-16 bg-zinc-950 text-white">
         {/* Section header */}
         <div className="mx-auto max-w-7xl px-4 pb-10 pt-16 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between border-b border-white/10 pb-8">
@@ -407,7 +375,7 @@ export default function Home() {
           <div className="hidden md:block">
             <div className="mb-2 grid grid-cols-2 gap-2">
               {longformRow1.map((p) => (
-                <ProjectCard key={p.id} project={{ ...p, size: 'tall' }} />
+                <ProjectCard key={p.id} project={{ ...p, size: 'video' }} />
               ))}
             </div>
             <div className="mb-2 grid grid-cols-3 gap-2">
@@ -415,9 +383,9 @@ export default function Home() {
                 <ProjectCard key={p.id} project={{ ...p, size: 'video' }} />
               ))}
             </div>
-            <div className="mb-2 grid grid-cols-2 gap-2">
+            <div className="mb-2 grid grid-cols-3 gap-2">
               {longformRow3.map((p) => (
-                <ProjectCard key={p.id} project={{ ...p, size: 'tall' }} />
+                <ProjectCard key={p.id} project={{ ...p, size: 'video' }} />
               ))}
             </div>
           </div>

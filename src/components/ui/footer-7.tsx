@@ -30,8 +30,8 @@ const defaultSections = [
   {
     title: "Company",
     links: [
-      { name: "Who We Are", href: "/who-we-are" },
       { name: "What We Offer", href: "/what-we-offer" },
+      { name: "Who We Are", href: "/who-we-are" },
       { name: "Contact Us", href: "/contact" },
     ],
   },

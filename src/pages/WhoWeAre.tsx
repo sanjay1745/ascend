@@ -10,12 +10,25 @@ export default function WhoWeAre() {
         <meta property="og:description" content="Meet Ken Munoz and Sanjay Suresh, founders of Ascender Production." />
       </Helmet>
     <div className="min-h-screen bg-background text-foreground">
-      <div className="mx-auto max-w-4xl px-6 py-24 sm:py-32">
-        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground mb-4">
-          Our Story
-        </p>
-        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-6">Who We Are</h1>
-        <div className="h-px w-16 bg-foreground/20 mb-10" />
+      {/* Header image */}
+      <header className="relative h-[55vh] min-h-[380px] max-h-[640px] overflow-hidden">
+        <img
+          src="/photos/dreamteam-header.webp"
+          alt="The Ascender team"
+          className="absolute inset-0 w-full h-full object-cover object-[center_35%]"
+          fetchPriority="high"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-background" />
+        <div className="relative mx-auto flex h-full max-w-4xl flex-col justify-end px-6 pb-10">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/70 mb-4">
+            Our Story
+          </p>
+          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 drop-shadow-lg">Who We Are</h1>
+          <div className="h-px w-16 bg-white/30" />
+        </div>
+      </header>
+
+      <div className="mx-auto max-w-4xl px-6 pt-10 pb-24 sm:pb-32">
         <div className="space-y-6 text-lg text-muted-foreground leading-relaxed">
           <p>
             Ascender was founded in 2024 by Ken Munoz and Sanjay Suresh to serve Northern California and Honolulu, Hawaii.
@@ -61,7 +74,7 @@ export default function WhoWeAre() {
                   'Ironman 70.3 Finisher',
                   '2x Honolulu Marathon Finisher',
                 ],
-                photo: null as string | null,
+                photo: '/photos/sanjay-founder.webp' as string | null,
               },
             ].map((founder) => (
               <div key={founder.name} className="rounded-xl border border-border p-8">
